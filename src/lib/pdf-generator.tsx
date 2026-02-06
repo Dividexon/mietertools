@@ -3,6 +3,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
 } from "@react-pdf/renderer";
 import { TemplateDefinition, fillTemplateText } from "@/lib/templates";
@@ -45,6 +46,28 @@ const styles = StyleSheet.create({
   coverLine: {
     marginBottom: 6,
   },
+  signatureSection: {
+    marginTop: 24,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: 16,
+  },
+  signatureLabel: {
+    fontSize: 10,
+    color: "#6B7280",
+    marginBottom: 4,
+  },
+  signatureImage: {
+    width: 150,
+    height: 60,
+    objectFit: "contain",
+  },
+  signatureLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    width: 200,
+    marginTop: 8,
+  },
 });
 
 function TemplateBody({
@@ -55,9 +78,27 @@ function TemplateBody({
   values: Record<string, string | number | undefined>;
 }) {
   const content = fillTemplateText(template.legalText, values);
+  const signatureDataUrl = values.signature as string | undefined;
+  
+  // Remove the "Unterschrift: ______" line from content if we have a real signature
+  const contentWithoutSignaturePlaceholder = signatureDataUrl 
+    ? content.replace(/Unterschrift[^:]*:\s*_+/g, "Unterschrift:")
+    : content;
+
   return (
     <View style={styles.section}>
-      <Text style={styles.paragraph}>{content}</Text>
+      <Text style={styles.paragraph}>{contentWithoutSignaturePlaceholder}</Text>
+      
+      {/* Signature Image */}
+      {signatureDataUrl && signatureDataUrl.startsWith("data:image") && (
+        <View style={styles.signatureSection}>
+          <View>
+            <Text style={styles.signatureLabel}>Unterschrift:</Text>
+            <Image src={signatureDataUrl} style={styles.signatureImage} />
+            <View style={styles.signatureLine} />
+          </View>
+        </View>
+      )}
     </View>
   );
 }

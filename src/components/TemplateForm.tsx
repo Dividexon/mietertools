@@ -5,6 +5,7 @@ import { TemplateDefinition, TemplateField } from "@/lib/templates";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignaturePad } from "@/components/SignaturePad";
 
 type TemplateFormProps = {
   template: TemplateDefinition;
@@ -21,6 +22,16 @@ function FieldInput({
   value: string;
   onChange: (value: string) => void;
 }) {
+  if (field.type === "signature") {
+    return (
+      <SignaturePad
+        value={value}
+        onChange={onChange}
+        label={field.label}
+      />
+    );
+  }
+
   if (field.type === "textarea") {
     return (
       <Textarea
@@ -61,21 +72,31 @@ export function TemplateForm({ template, values, onChange }: TemplateFormProps) 
       </CardHeader>
       <CardContent className="space-y-5">
         {template.fields.map((field) => (
-          <label key={field.name} className="grid gap-2 text-sm">
-            <span className="font-medium">
-              {field.label} {field.required ? "*" : ""}
-            </span>
-            <FieldInput
-              field={field}
-              value={values[field.name] ?? ""}
-              onChange={(value) => updateField(field.name, value)}
-            />
-            {field.hint ? (
-              <span className="text-xs text-muted-foreground">
-                {field.hint}
+          field.type === "signature" ? (
+            <div key={field.name}>
+              <FieldInput
+                field={field}
+                value={values[field.name] ?? ""}
+                onChange={(value) => updateField(field.name, value)}
+              />
+            </div>
+          ) : (
+            <label key={field.name} className="grid gap-2 text-sm">
+              <span className="font-medium">
+                {field.label} {field.required ? "*" : ""}
               </span>
-            ) : null}
-          </label>
+              <FieldInput
+                field={field}
+                value={values[field.name] ?? ""}
+                onChange={(value) => updateField(field.name, value)}
+              />
+              {field.hint ? (
+                <span className="text-xs text-muted-foreground">
+                  {field.hint}
+                </span>
+              ) : null}
+            </label>
+          )
         ))}
       </CardContent>
     </Card>

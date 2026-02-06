@@ -4,7 +4,8 @@ export type TemplateFieldType =
   | "email"
   | "tel"
   | "date"
-  | "number";
+  | "number"
+  | "signature";
 
 export type TemplateField = {
   name: string;
@@ -36,6 +37,13 @@ const commonFields: TemplateField[] = [
     label: "Datum",
     type: "date",
     required: true,
+  },
+  {
+    name: "signature",
+    label: "Unterschrift",
+    type: "signature",
+    required: true,
+    hint: "Unterschreiben Sie digital oder laden Sie ein Bild Ihrer Unterschrift hoch.",
   },
 ];
 
