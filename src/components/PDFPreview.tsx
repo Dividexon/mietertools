@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 type PDFPreviewProps = {
-  document: React.ReactElement;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  document: React.ReactElement<any>;
   fileName: string;
   title?: string;
 };
@@ -22,7 +23,8 @@ export function PDFPreview({ document, fileName, title }: PDFPreviewProps) {
     setIsGenerating(true);
     setError(null);
 
-    pdf(document)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pdf(document as any)
       .toBlob()
       .then((blob) => {
         if (cancelled) return;
